@@ -3,7 +3,7 @@
  * Released under the MIT license.
  * http://laxarjs.org/license
  */
-define( 'laxar-testing/lib/helpers',[
+define( 'laxar-mocks/lib/helpers',[
    'require'
 ], function( require ) {
    'use strict';
@@ -55,7 +55,7 @@ define( 'laxar-testing/lib/helpers',[
  * Released under the MIT license.
  * http://laxarjs.org/license
  */
-define( 'laxar-testing/lib/mini_http',[
+define( 'laxar-mocks/lib/mini_http',[
    'laxar'
 ], function( ax ) {
    'use strict';
@@ -135,7 +135,7 @@ define( 'laxar-testing/lib/mini_http',[
  * Released under the MIT license.
  * http://laxarjs.org/license
  */
-define( 'laxar-testing/lib/widget_spec_initializer',[
+define( 'laxar-mocks/lib/widget_spec_initializer',[
    'require',
    'laxar',
    './helpers',
@@ -201,7 +201,12 @@ define( 'laxar-testing/lib/widget_spec_initializer',[
          } );
 
          return ax._tooling.widgetLoader
-            .create( helpers.legacyQ(), fileResourceProvider, themeManager, cssLoader, specContext.eventBus )
+            .create( helpers.legacyQ(), {
+               axFileResourceProvider: fileResourceProvider,
+               axThemeManager: themeManager,
+               axCssLoader: cssLoader,
+               axGlobalEventBus: specContext.eventBus
+            } )
             .load( configuration, {
                onBeforeControllerCreation: function( environment, injections ) {
                   [ 'subscribe', 'publish', 'publishAndGatherReplies' ].forEach( function( method ) {
@@ -315,7 +320,7 @@ define( 'laxar-testing/lib/widget_spec_initializer',[
  * Copyright (c) 2008-2015 Pivotal Labs
  * license found at https://raw.githubusercontent.com/jasmine/jasmine/master/MIT.LICENSE
  */
-define( 'laxar-testing/lib/jasmine_boot',[
+define( 'laxar-mocks/lib/jasmine_boot',[
    'laxar'
 ], function( ax ) {
    'use strict';
@@ -445,9 +450,9 @@ define( 'laxar-testing/lib/jasmine_boot',[
 /**
  * A testing framework for LaxarJS widgets.
  *
- * @module laxar-testing
+ * @module laxar-mocks
  */
-define( 'laxar-testing/laxar-testing',[
+define( 'laxar-mocks/laxar-mocks',[
    'require',
    'laxar',
    './lib/helpers',
@@ -577,7 +582,7 @@ define( 'laxar-testing/laxar-testing',[
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-   var testing = {
+   var axMocks = {
       createSetupForWidget: createSetupForWidget,
       widget: widget,
       runSpec: null,
@@ -596,7 +601,7 @@ define( 'laxar-testing/laxar-testing',[
 
    var jasmineRunner;
    var specContextLoaded = new Promise( function( resolve, reject ) {
-      testing.runSpec = function( specConf, jasmineEnv ) {
+      axMocks.runSpec = function( specConf, jasmineEnv ) {
          if( specConf.title ) {
             document.title = specConf.title;
          }
@@ -652,8 +657,8 @@ define( 'laxar-testing/laxar-testing',[
     * ```js
     * define( [
     *    'json!../widget.json',
-    *    'laxar-testing'
-    * ], function( descriptor, testing ) {
+    *    'laxar-mocks'
+    * ], function( descriptor, axMocks ) {
     *    'use strict';
     *
     *    describe( 'An ExampleWidget', function() {
@@ -662,7 +667,7 @@ define( 'laxar-testing/laxar-testing',[
     *
     *       // ... widget configuration, loading and your tests
     *
-    *       afterEach( testing.tearDown );
+    *       afterEach( axMocks.tearDown );
     *
     *    } );
     * } );
@@ -692,17 +697,17 @@ define( 'laxar-testing/laxar-testing',[
       var applyViewChanges = adapterFactory.applyViewChanges ? adapterFactory.applyViewChanges : function() {};
 
       return function( done ) {
-         testing.eventBus = ax._tooling.eventBus.create();
-         testing.eventBus.flush = function() {
+         axMocks.eventBus = ax._tooling.eventBus.create();
+         axMocks.eventBus.flush = function() {
             flushEventBusTicks();
             applyViewChanges();
          };
          specContextLoaded
             .then( function( specContext ) {
-               specContext.eventBus = testing.eventBus;
+               specContext.eventBus = axMocks.eventBus;
                specContext.options = options;
                return widgetSpecInitializer
-                  .createSetupForWidget( specContext, testing.widget, widgetPrivateApi, widgetDescriptor );
+                  .createSetupForWidget( specContext, axMocks.widget, widgetPrivateApi, widgetDescriptor );
             } )
             .catch( handleErrorForJasmine )
             .then( done );
@@ -717,7 +722,7 @@ define( 'laxar-testing/laxar-testing',[
     *
     * Example.
     * ```js
-    * afterEach( testing.tearDown );
+    * afterEach( axMocks.tearDown );
     * ```
     */
    function tearDown() {
@@ -816,7 +821,7 @@ define( 'laxar-testing/laxar-testing',[
     *
     * Example:
     * ```js
-    * testing.triggerStartupEvents( {
+    * axMocks.triggerStartupEvents( {
     *    didChangeLocale: {
     *       alternative: {
     *          locale: 'alternative',
@@ -870,10 +875,10 @@ define( 'laxar-testing/laxar-testing',[
                .forEach( function( topicRemainder ) {
                   var payload = event.subtopics[ topicRemainder ];
                   if( payload ) {
-                     testing.eventBus.publish( event.primaryTopic + '.' + topicRemainder, payload );
+                     axMocks.eventBus.publish( event.primaryTopic + '.' + topicRemainder, payload );
                   }
                } );
-            testing.eventBus.flush();
+            axMocks.eventBus.flush();
          } );
    }
 
@@ -944,8 +949,8 @@ define( 'laxar-testing/laxar-testing',[
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-   return testing;
+   return axMocks;
 
 } );
-define('laxar-testing', ['laxar-testing/laxar-testing'], function (main) { return main; });
+define('laxar-mocks', ['laxar-mocks/laxar-mocks'], function (main) { return main; });
 

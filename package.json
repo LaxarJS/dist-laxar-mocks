@@ -1,14 +1,14 @@
 {
-   "name": "laxar-testing",
-   "version": "0.4.0-pre",
+   "name": "laxar-mocks",
+   "version": "0.4.0",
    "description": "The companion testing framework for LaxarJS widgets.",
    "homepage": "http://laxarjs.org",
-   "main": "dist/laxar-testing.js",
+   "main": "dist/laxar-mocks.js",
    "author": "LaxarJS Team <info@laxarjs.org>",
    "license": "MIT",
    "repository": {
       "type": "git",
-      "url": "https://github.com/LaxarJS/dist-laxar-testing.git"
+      "url": "https://github.com/LaxarJS/dist-laxar-mocks.git"
    },
    "scripts": {
       "prepublish": "bower install"
@@ -20,7 +20,7 @@
       "grunt-contrib-copy": "~0.8.0",
       "grunt-contrib-requirejs": "~0.4.4",
       "grunt-contrib-uglify": "~0.9.1",
-      "grunt-laxar": "^1.0.0-alpha.3"
+      "grunt-laxar": "^1.0.0-alpha.9"
    },
    "bugs": {
       "url": "https://github.com/LaxarJS/laxar-uikit/issues",

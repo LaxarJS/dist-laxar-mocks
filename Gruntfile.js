@@ -54,7 +54,7 @@ module.exports = function (grunt) {
       requirejs: {
          options: base,
 
-         // Just LaxarJS Testing itself, no dependencies
+         // Just LaxarJS Mocks itself, no dependencies
          // Allows (and requires) you to configure all dependencies yourself.
          'default': {
             options: {
@@ -63,7 +63,7 @@ module.exports = function (grunt) {
          }
       },
 
-      // For the non-testing bundles, create minified versions as well:
+      // Create a minified version as well:
       uglify: {
          options: {
             sourceMap: true,
@@ -72,7 +72,7 @@ module.exports = function (grunt) {
 
          'default': {
             files: {
-               'dist/laxar-testing.min.js': [ 'dist/laxar-testing.js' ]
+               'dist/laxar-mocks.min.js': [ 'dist/laxar-mocks.js' ]
             }
          }
       },
