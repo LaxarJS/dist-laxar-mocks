@@ -699,8 +699,8 @@ define( 'laxar-mocks/laxar-mocks',[
          knownMissingResources: []
       } );
 
-      if( optionalOptions.adapter ) {
-         ax._tooling.widgetAdapters.addAdapters( [ optionalOptions.adapter ] );
+      if( options.adapter ) {
+         ax._tooling.widgetAdapters.addAdapters( [ options.adapter ] );
       }
 
       var adapterFactory = ax._tooling.widgetAdapters.getFor( widgetDescriptor.integration.technology );
@@ -962,5 +962,6 @@ define( 'laxar-mocks/laxar-mocks',[
    return axMocks;
 
 } );
+
 define('laxar-mocks', ['laxar-mocks/laxar-mocks'], function (main) { return main; });
 
