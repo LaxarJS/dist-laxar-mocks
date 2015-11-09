@@ -163,7 +163,7 @@ define( 'laxar-mocks/lib/widget_spec_initializer',[
             return helpers.require( deps );
          } )
          .then( function( modules ) {
-            return registerModules( modules[ 0 ], modules.slice( 1 ), widgetDescriptor.integration.technology );
+            return registerModules( specContext, modules[ 0 ], modules.slice( 1 ), widgetDescriptor.integration.technology );
          } )
          .then( function() {
             return {
@@ -239,18 +239,19 @@ define( 'laxar-mocks/lib/widget_spec_initializer',[
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-   function registerModules( widgetModule, controlModules, widgetTechnology ) {
+   function registerModules( specContext, widgetModule, controlModules, widgetTechnology ) {
       var adapter = ax._tooling.widgetAdapters.getFor( widgetTechnology );
       if( !adapter ) {
          ax.log.error( 'Unknown widget technology: [0]', widgetTechnology );
          return Promise.reject( new Error( 'Unknown widget technology: ' + widgetTechnology ) );
       }
 
-      if( widgetTechnology === 'angular' ) {
-         return helpers.require( [ 'angular-mocks' ] )
-            .then( function( modules ) {
-               var ngMocks = modules[ 0 ];
-               var adapterModule = adapter.bootstrap( [ widgetModule ] );
+      return helpers.require( [ 'angular-mocks' ] )
+         .then( function( modules ) {
+            var ngMocks = modules[ 0 ];
+            var adapterModule = adapter.bootstrap( [ widgetModule ] );
+
+            if( widgetTechnology === 'angular' ) {
                ngMocks.module( ax._tooling.runtimeDependenciesModule.name );
                ngMocks.module( adapterModule.name );
                controlModules.forEach( function( controlModule ) {
@@ -258,13 +259,13 @@ define( 'laxar-mocks/lib/widget_spec_initializer',[
                      ngMocks.module( controlModule.name );
                   }
                } );
-               ngMocks.inject();
-               return adapter;
-            } );
-      }
+            }
 
-      adapter.bootstrap( [ widgetModule ] );
-      return Promise.resolve( adapter );
+            ngMocks.inject( function( $q ) {
+               ax._tooling.eventBus.init( $q, specContext.eventBusTick, specContext.eventBusTick );
+            } );
+            return adapter;
+         } );
    }
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -714,6 +715,7 @@ define( 'laxar-mocks/laxar-mocks',[
          };
          specContextLoaded
             .then( function( specContext ) {
+               specContext.eventBusTick = eventBusTick;
                specContext.eventBus = axMocks.eventBus;
                specContext.options = options;
                return widgetSpecInitializer
