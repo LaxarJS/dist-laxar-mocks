@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 aixigo AG
+ * Copyright 2016 aixigo AG
  * Released under the MIT license.
  * http://laxarjs.org/license
  */
@@ -50,8 +50,9 @@ define( 'laxar-mocks/lib/helpers',[
    };
 
 } );
+
 /**
- * Copyright 2015 aixigo AG
+ * Copyright 2016 aixigo AG
  * Released under the MIT license.
  * http://laxarjs.org/license
  */
@@ -130,8 +131,9 @@ define( 'laxar-mocks/lib/mini_http',[
    };
 
 } );
+
 /**
- * Copyright 2015 aixigo AG
+ * Copyright 2016 aixigo AG
  * Released under the MIT license.
  * http://laxarjs.org/license
  */
@@ -319,7 +321,7 @@ define( 'laxar-mocks/lib/widget_spec_initializer',[
 } );
 
 /**
- * Copyright 2015 aixigo AG
+ * Copyright 2016 aixigo AG
  * Released under the MIT license.
  * http://laxarjs.org/license
  *
@@ -336,7 +338,7 @@ define( 'laxar-mocks/lib/jasmine_boot',[
       if( optionalJasmineEnv ) {
          return createRunner( optionalJasmineEnv );
       }
-      
+
       /**
        * ## Require &amp; Instantiate
        *
@@ -421,14 +423,14 @@ define( 'laxar-mocks/lib/jasmine_boot',[
       window.setInterval = window.setInterval;
       window.clearTimeout = window.clearTimeout;
       window.clearInterval = window.clearInterval;
-      
+
       htmlReporter.initialize();
-      
+
       return createRunner( env );
    }
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-   
+
    function createRunner( jasmineEnv ) {
       return {
          run: function() {
@@ -437,16 +439,17 @@ define( 'laxar-mocks/lib/jasmine_boot',[
          env: jasmineEnv
       };
    }
-   
+
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-   
+
    return {
       create: create
    };
 
 } );
+
 /**
- * Copyright 2015 aixigo AG
+ * Copyright 2016 aixigo AG
  * Released under the MIT license.
  * http://laxarjs.org/license
  *
